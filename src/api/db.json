@@ -1,0 +1,125 @@
+{
+  "days": [
+    {
+      "id": 0,
+      "name": "понедельник",
+      "shortName": "пн"
+    },
+    {
+      "id": 1,
+      "name": "вторник",
+      "shortName": "вт"
+    },
+    {
+      "id": 2,
+      "name": "среда",
+      "shortName": "ср"
+    },
+    {
+      "id": 3,
+      "name": "четверг",
+      "shortName": "чт"
+    },
+    {
+      "id": 4,
+      "name": "пятница",
+      "shortName": "пт"
+    },
+    {
+      "id": 5,
+      "name": "суббота",
+      "shortName": "сб"
+    },
+    {
+      "id": 6,
+      "name": "воскресенье",
+      "shortName": "вс"
+    }
+  ],
+  "tasks": [
+    {
+      "time": "10:00",
+      "content": "task3",
+      "dayId": 1,
+      "isPassed": true,
+      "id": 1
+    },
+    {
+      "time": "12:01",
+      "content": "task4",
+      "dayId": 1,
+      "isPassed": true,
+      "id": 2
+    },
+    {
+      "time": "22:20",
+      "content": "task6",
+      "dayId": 1,
+      "isPassed": false,
+      "id": 3
+    },
+    {
+      "time": "20:04",
+      "content": "task4",
+      "dayId": 3,
+      "isPassed": false,
+      "id": 4
+    },
+    {
+      "time": "09:23",
+      "content": "task1",
+      "dayId": 3,
+      "isPassed": false,
+      "id": 5
+    },
+    {
+      "time": "16:00",
+      "content": "task2",
+      "dayId": 3,
+      "isPassed": true,
+      "id": 6
+    },
+    {
+      "time": "16:00",
+      "content": "task1",
+      "dayId": 6,
+      "isPassed": true,
+      "id": 7
+    },
+    {
+      "time": "16:00",
+      "content": "task3",
+      "dayId": 4,
+      "isPassed": true,
+      "id": 8
+    },
+    {
+      "time": "17:00",
+      "content": "task3",
+      "dayId": 3,
+      "isPassed": true,
+      "id": 9
+    },
+    {
+      "time": "11:53",
+      "content": "task1",
+      "dayId": 0,
+      "isPassed": false,
+      "id": 10
+    },
+    {
+      "time": "09:00",
+      "content": "task3",
+      "dayId": 0,
+      "isPassed": true,
+      "id": 11
+    },
+    {
+      "time": "18:08",
+      "content": "task5",
+      "dayId": 1,
+      "isPassed": false,
+      "id": 12
+    }
+  ]
+}
