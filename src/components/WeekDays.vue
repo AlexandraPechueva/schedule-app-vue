@@ -2,7 +2,8 @@
   <div class="week-days">
     <p v-for="day in WEEKDAYS" :key="day.id" 
       class="day"
-      :class="{ 'day-activated': day.id === activatedDay }"
+      :class="{ 'day-activated': day.id === ACTIVATED_DAY }"
+      @click="getDay(day.id)"
     >
       {{ day.shortName }}
     </p>
@@ -15,19 +16,29 @@
   export default {
     name: 'week-days',
     computed: {
-      ...mapGetters(['WEEKDAYS']),
+      ...mapGetters([
+        'WEEKDAYS',
+        'ACTIVATED_DAY',
+      ]),
     },
     methods: {
       ...mapActions([
         'GET_WEEKDAYS',
+        'GET_ACTIVATED_DAY',
       ]),
+      getDay(id) {
+        this.GET_ACTIVATED_DAY(id);
+      }
     },
 
     mounted() {
+      const today =  new Date().toLocaleDateString('ru-Ru', { weekday: 'short' });
+
       this.GET_WEEKDAYS()
         .then(res => {
           if(res) {
-            console.log(res.data);
+            const todayId = this.WEEKDAYS.find(day => day.shortName === today).id
+            this.GET_ACTIVATED_DAY(todayId);
           }
       });
     },

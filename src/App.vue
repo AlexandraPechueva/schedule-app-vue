@@ -11,12 +11,14 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: $text-color;
-  box-sizing: border-box;
-}
+  @import 'assets/styles/scss/reset.scss';
+
+  #app {
+    font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: $text-color;
+    box-sizing: border-box;
+  }
 </style>

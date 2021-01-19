@@ -2,21 +2,23 @@
   <div class="schedule-container">
      <h1 class="title">Список задач</h1>
        <div class="form-container">
-         <!-- day component :activatedDay-->
+         <day-schedule />
 
-        <week-days />
+          <week-days />
        </div>
   </div>
 </template>
 
 <script>
-import weekDays from '@/components/WeekDays.vue';
+import WeekDays from '@/components/WeekDays.vue';
+import DaySchedule from '@/components/DaySchedule.vue';
 
 export default {
   name: 'week-schedule',
   components: {
-    weekDays,
-  }
+    WeekDays,
+    DaySchedule,
+  },
 }
 </script>
 
