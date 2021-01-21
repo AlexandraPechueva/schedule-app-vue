@@ -3,6 +3,7 @@ import axios from 'axios';
 export default {
   state: {
     dayTasks:[],
+    currentTasksState: 'Все',
   },
   actions: {
     GET_DAY_TASKS({commit}, dayId) {
@@ -11,7 +12,6 @@ export default {
       })
         .then(response => {
           commit('SET_DAY_TASKS', response.data);
-
           return response.data;
         })
         .catch(error => {
@@ -36,11 +36,31 @@ export default {
       state.dayTasks.forEach(task => {
         task.isPassed = isPassed(task.time)
       });
-    }
+    },
+
+    SET_CURRENT_TASKS_STATE(state, value) {
+      state.currentTasksState = value;
+    },
   },
   getters: {
     DAY_TASKS(state) {
       return state.dayTasks;
     },
+
+    CURRENT_TASKS_STATE(state) {
+      return state.currentTasksState;
+    },
+
+    FILTERED_DAY_TASKS(state) {
+      if(state.currentTasksState === 'Активные') {
+        return state.dayTasks.filter(task => !task.isPassed)
+      }
+      else if(state.currentTasksState === 'Прошедшие') {
+        return state.dayTasks.filter(task => task.isPassed)
+      }
+      else {
+        return state.dayTasks;
+       }
+    }
   },
 }

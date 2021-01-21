@@ -1,10 +1,24 @@
 <template>
   <div class="day-schedule">
      <div class="icons-panel">
+        <div class="icon"><md-icon>open_in_new</md-icon></div>
+
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item">
+            <md-field class="list">
+              <!-- https://github.com/vuematerial/vue-material/issues/2285 console errors Cannot read property 'badInput' of undefined"-->
+              <md-select v-model="currentTasksState" name="filter" id="filter" placeholder="Вид задачи" md-dense>
+                <md-option v-for="(state,index) in taskStates" :key="index" :value="state">{{state}}</md-option>
+              </md-select>
+            </md-field>
+          </div>
+        </div>
+
+        <div class="icon"><md-icon>add</md-icon></div>
      </div>
 
-    <div v-if="DAY_TASKS && DAY_TASKS.length" class="tasks">
-      <div v-for="task in DAY_TASKS" :key="task.id" 
+    <div v-if="FILTERED_DAY_TASKS && FILTERED_DAY_TASKS.length" class="tasks">
+      <div v-for="task in FILTERED_DAY_TASKS" :key="task.id"
         class="task animation"
         :class="{'passed-time': task.isPassed}">
         
@@ -27,25 +41,36 @@ export default {
     data() {
       return {
         activatedDay: 0,
-      }
+        taskStates: ['Все','Активные','Прошедшие'],
+       }
     },
   computed: {
       ...mapGetters([
-        'DAY_TASKS',
         'ACTIVATED_DAY',
+        'FILTERED_DAY_TASKS',
       ]),
+      currentTasksState: {
+        get () {
+          return this.$store.getters['CURRENT_TASKS_STATE'];
+        },
+        set (value) {
+          this.$store.commit('SET_CURRENT_TASKS_STATE', value);
+        }
+      },
     },
   methods: {
     ...mapActions([
       'GET_DAY_TASKS',
     ]),
 
-     ...mapMutations(['CHECK_IS_PASSED']),
+    ...mapMutations([
+      'CHECK_IS_PASSED',
+    ]),
 
     isPassed(time) {
       const today = new Date();
       let currentDay = today.getDay() - 1;
-      const currentTime = today.getHours() + ":" + today.getMinutes();
+      const timeParts = time.split(':');
 
       if (currentDay < 0) {
         currentDay = currentDay + 6;
@@ -55,7 +80,12 @@ export default {
         return true;
       }
       else if (this.ACTIVATED_DAY === currentDay) {
-        return time < currentTime;
+        if (timeParts[0] === today.getHours().toString()) {
+          return timeParts[0] < today.getMinutes().toString();
+        }
+        else {
+          return timeParts[0] < today.getHours().toString();
+        }
       }
       else {
         return false;
@@ -63,13 +93,13 @@ export default {
     },
    },
   watch: {
-   ACTIVATED_DAY() {
+    ACTIVATED_DAY() {
       this.GET_DAY_TASKS(this.ACTIVATED_DAY)
         .then(res => {
           if(res) {
-            this.CHECK_IS_PASSED(this.isPassed)
+            this.CHECK_IS_PASSED(this.isPassed);
           }
-        });
+      });
     },
   },
 }
@@ -94,7 +124,10 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
-    height: 50px;
+  }
+
+  .icon :hover {
+    cursor: pointer;
   }
 
   .tasks {
@@ -145,5 +178,9 @@ export default {
 
   .animation {
     animation: AddRecords 400ms;
+  }
+
+  .list {
+    margin-top: -24px;
   }
 </style>

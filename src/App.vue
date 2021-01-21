@@ -20,5 +20,9 @@ export default {
     text-align: center;
     color: $text-color;
     box-sizing: border-box;
+
+    .md-input, .md-input::placeholder {
+      font-size: 14px;
+    }
   }
 </style>
