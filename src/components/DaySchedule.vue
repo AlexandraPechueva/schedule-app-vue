@@ -1,5 +1,7 @@
 <template>
   <div class="day-schedule">
+     <modal-dialog @submitDialog="submitDialog" />
+
      <div class="icons-panel">
         <div class="icon"><md-icon>open_in_new</md-icon></div>
 
@@ -25,7 +27,7 @@
           <p class="task-name">{{task.time}}</p>
           <p class="task-content">{{task.content}}</p>
 
-          <md-icon>delete</md-icon>
+          <md-icon @click.native="deleteTaskConfirm(task.id)">delete</md-icon>
         </div>
       </div>
  
@@ -35,6 +37,7 @@
 
 <script>
  import {mapActions, mapGetters, mapMutations} from 'vuex';
+ import ModalDialog from '@/components/ModalDialog.vue';
 
 export default {
   name: 'day-schedule',
@@ -42,8 +45,12 @@ export default {
       return {
         activatedDay: 0,
         taskStates: ['Все','Активные','Прошедшие'],
+        taskToDelete: 0,
        }
     },
+  components: {
+    ModalDialog,
+  },
   computed: {
       ...mapGetters([
         'ACTIVATED_DAY',
@@ -61,11 +68,26 @@ export default {
   methods: {
     ...mapActions([
       'GET_DAY_TASKS',
+      'DELETE_DAY_TASK',
     ]),
 
     ...mapMutations([
       'CHECK_IS_PASSED',
+      'SET_SHOW_MODAL',
     ]),
+
+    deleteTaskConfirm(taskId) {
+       this.$store.commit('SET_SHOW_MODAL', 'delete-confirm');
+       this.taskToDelete = taskId;
+    },
+
+    submitDialog(data) {
+      if (data === 'delete-confirm') {
+        this.DELETE_DAY_TASK(this.taskToDelete);
+
+        this.$store.commit('SET_SHOW_MODAL', '');
+      }
+    },
 
     isPassed(time) {
       const today = new Date();

@@ -7,9 +7,7 @@ export default {
   },
   actions: {
     GET_DAY_TASKS({commit}, dayId) {
-      return axios('/api/tasks?dayId=' + dayId, {
-        method: 'GET',
-      })
+      return axios.get('/api/tasks?dayId=' + dayId)
         .then(response => {
           commit('SET_DAY_TASKS', response.data);
           return response.data;
@@ -17,7 +15,15 @@ export default {
         .catch(error => {
           console.log('ошибка ' + error)
         });
-    }
+    },
+
+    DELETE_DAY_TASK({commit},taskId) {
+      return axios.delete('/api/tasks/' + taskId)
+        .then (response => {
+          commit('DELETE_DAY_TASK', taskId);
+          return response.data;
+        })
+    },
   },
   mutations: {
     SET_DAY_TASKS(state, dayTasks) {
@@ -41,6 +47,10 @@ export default {
     SET_CURRENT_TASKS_STATE(state, value) {
       state.currentTasksState = value;
     },
+
+    DELETE_DAY_TASK(state, taskId) {
+      state.dayTasks = state.dayTasks.filter(task => task.id !== taskId)
+    }
   },
   getters: {
     DAY_TASKS(state) {
