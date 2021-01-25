@@ -1,6 +1,6 @@
 <template>
   <div class="modal-dialog">
-    <md-dialog :md-active.sync="visible">
+    <md-dialog :md-active.sync="visible" @md-clicked-outside="closeDialog()">
       <!-- <md-dialog-title>Preferences</md-dialog-title> -->
 
       <component :is="component"></component>
@@ -16,16 +16,12 @@
 <script>
   import { mapState } from 'vuex';
   import Vue from 'vue';
-  import DeleteConfirm from '@/components/DeleteConfirm.vue'
 
   export default {
     name: 'modal-dialog',
     data: () => ({
        component: null,
      }),
-    components: {
-      DeleteConfirm,
-    },
     computed: {
       ...mapState({
         visible: state => state.dialog.modalVisible,
@@ -36,23 +32,38 @@
       modalComponent(componentName) {
         if (!componentName) return;
 
-        Vue.component(componentName, () => import(`@/components/${componentName}`));
-        this.component = this.modalComponent;
+        const componentNamePath = componentName.split('-')
+          .map(item => item[0].toUpperCase() + item.substring(1)).join('');
+
+        Vue.component(componentName, () => import(`@/components/${componentNamePath}.vue`));
+        this.component = componentName;
       },
     },
     methods: {
       closeDialog() {
-        this.$store.commit('SET_SHOW_MODAL', '');
+        this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
       },
       submitDialog() {
         this.$emit('submitDialog', this.modalComponent);
       }
+    },
+    created() {
+      const escapeHandler = (e) => {
+        if (e.key === 'Escape' && this.visible) {
+          this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
+        }
+      };
+
+      document.addEventListener('keydown', escapeHandler);
+      this.$once('hook:destroyed', () => {
+        document.removeEventListener('keydown', escapeHandler);
+      });
     }
   }
 </script>
 
 <style lang="scss">
-  .md-dialog /deep/.md-dialog-container {
+  .md-dialog .md-dialog-container {
     max-width: 768px;
   }
 </style>

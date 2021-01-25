@@ -85,7 +85,7 @@ export default {
       if (data === 'delete-confirm') {
         this.DELETE_DAY_TASK(this.taskToDelete);
 
-        this.$store.commit('SET_SHOW_MODAL', '');
+        this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
       }
     },
 
