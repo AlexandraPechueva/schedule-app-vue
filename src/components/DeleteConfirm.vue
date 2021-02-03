@@ -1,5 +1,5 @@
 <template>
-  <div class="DeleteConfirm">
+  <div class="delete-confirm">
     <p class = "question">Вы уверены?</p>
   </div>
 </template>

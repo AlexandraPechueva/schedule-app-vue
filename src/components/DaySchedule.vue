@@ -16,14 +16,14 @@
           </div>
         </div>
 
-        <div class="icon"><md-icon>add</md-icon></div>
+        <div class="icon"><md-icon @click.native="addTask()">add</md-icon></div>
      </div>
 
     <div v-if="FILTERED_DAY_TASKS && FILTERED_DAY_TASKS.length" class="tasks">
       <div v-for="task in FILTERED_DAY_TASKS" :key="task.id"
         class="task animation"
         :class="{'passed-time': task.isPassed}">
-        
+
           <p class="task-name">{{task.time}}</p>
           <p class="task-content">{{task.content}}</p>
 
@@ -46,6 +46,7 @@ export default {
         activatedDay: 0,
         taskStates: ['Все','Активные','Прошедшие'],
         taskToDelete: 0,
+        newTask: null,
        }
     },
   components: {
@@ -68,6 +69,7 @@ export default {
   methods: {
     ...mapActions([
       'GET_DAY_TASKS',
+      'ADD_DAY_TASK',
       'DELETE_DAY_TASK',
     ]),
 
@@ -81,9 +83,30 @@ export default {
        this.taskToDelete = taskId;
     },
 
+    addTask() {
+      this.$store.commit('SET_SHOW_MODAL', 'add-edit');
+      this.newTask = this.makeNewTask();
+    },
+
+    makeNewTask() {
+      return {
+        id:Date.now(),
+        time: '11:00',//data.time,
+        content: 'mock task',//data.content,
+        dayId: this.ACTIVATED_DAY,
+        isPassed: this.isPassed('11:00'),//this.isPassed(data.time),
+      }
+    },
+
     submitDialog(data) {
       if (data === 'delete-confirm') {
         this.DELETE_DAY_TASK(this.taskToDelete);
+
+        this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
+      }
+
+      if (data === 'add-edit') {
+        this.ADD_DAY_TASK(this.newTask);
 
         this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
       }

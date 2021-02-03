@@ -17,6 +17,12 @@ export default {
         });
     },
 
+    ADD_DAY_TASK({commit, state}, newTask) {
+      commit('ADD_DAY_TASK', newTask);
+      commit('SET_DAY_TASKS', state.dayTasks);
+      return axios.post('/api/tasks/', newTask)
+    },
+
     DELETE_DAY_TASK({commit},taskId) {
       return axios.delete('/api/tasks/' + taskId)
         .then (response => {
@@ -50,7 +56,12 @@ export default {
 
     DELETE_DAY_TASK(state, taskId) {
       state.dayTasks = state.dayTasks.filter(task => task.id !== taskId)
-    }
+    },
+
+    ADD_DAY_TASK(state, newTask) {
+      state.dayTasks.push(newTask);
+    },
+
   },
   getters: {
     DAY_TASKS(state) {
