@@ -101,15 +101,13 @@ export default {
     submitDialog(data) {
       if (data === 'delete-confirm') {
         this.DELETE_DAY_TASK(this.taskToDelete);
-
-        this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
       }
 
       if (data === 'add-edit') {
         this.ADD_DAY_TASK(this.newTask);
-
-        this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
       }
+
+      this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
     },
 
     isPassed(time) {
