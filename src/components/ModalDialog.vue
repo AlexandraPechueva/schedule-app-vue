@@ -6,7 +6,7 @@
       <component :is="component"></component>
 
       <md-dialog-actions>
-          <md-button class="md-primary" @click="submitDialog()">OK</md-button>
+          <md-button class="md-primary" @click="submitDialog()" :disabled="!isValid">OK</md-button>
           <md-button class="md-primary" @click="closeDialog()">Отмена</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -26,6 +26,7 @@
       ...mapState({
         visible: state => state.dialog.modalVisible,
         modalComponent: state => state.dialog.modalComponent,
+        isValid: state => state.dialog.isValid,
       }),
     },
     watch: {
@@ -58,7 +59,7 @@
       this.$once('hook:destroyed', () => {
         document.removeEventListener('keydown', escapeHandler);
       });
-    }
+    },
   }
 </script>
 

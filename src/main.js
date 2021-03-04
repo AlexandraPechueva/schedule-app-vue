@@ -4,7 +4,9 @@ import store from './store';
 import router from './router';
 import '@/assets/styles/scss/index.scss';
 import vueMaterial from './assets/styles/vueMaterial';
+import Plugin from './assets/plugins';
 
+Plugin(Vue);
 Vue.config.productionTip = false;
 
 new Vue({
