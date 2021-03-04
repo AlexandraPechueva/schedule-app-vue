@@ -54,6 +54,10 @@
         }
 
         this.GET_IS_VALID(!this.$v.form.$invalid);
+
+        if(!this.$v.form.$invalid) {
+          this.$emit('onAddTask', this.form)
+        }
       }
     },
   }

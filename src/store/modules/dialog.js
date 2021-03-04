@@ -19,6 +19,7 @@ export default {
     },
     SET_IS_VALID(state, isValid) {
       state.isValid = isValid;
+      console.log(state.isValid);
     }
   },
 }

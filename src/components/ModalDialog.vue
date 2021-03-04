@@ -3,7 +3,7 @@
     <md-dialog :md-active.sync="visible" @md-clicked-outside="closeDialog()">
       <!-- <md-dialog-title>Preferences</md-dialog-title> -->
 
-      <component :is="component"></component>
+      <component :is="component" @onAddTask="onAddTask"></component>
 
       <md-dialog-actions>
           <md-button class="md-primary" @click="submitDialog()" :disabled="!isValid">OK</md-button>
@@ -21,6 +21,7 @@
     name: 'modal-dialog',
     data: () => ({
        component: null,
+       modalData: {},
      }),
     computed: {
       ...mapState({
@@ -44,9 +45,12 @@
       closeDialog() {
         this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
       },
+      onAddTask(form) {
+        this.modalData = form;
+      },
       submitDialog() {
-        this.$emit('submitDialog', this.modalComponent);
-      }
+        this.$emit('submitDialog', this.modalComponent, this.modalData);
+      },
     },
     created() {
       const escapeHandler = (e) => {

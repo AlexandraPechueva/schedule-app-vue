@@ -46,7 +46,6 @@ export default {
         activatedDay: 0,
         taskStates: ['Все','Активные','Прошедшие'],
         taskToDelete: 0,
-        newTask: null,
        }
     },
   components: {
@@ -76,35 +75,38 @@ export default {
     ...mapMutations([
       'CHECK_IS_PASSED',
       'SET_SHOW_MODAL',
+      'SET_IS_VALID',
     ]),
 
     deleteTaskConfirm(taskId) {
-       this.$store.commit('SET_SHOW_MODAL', 'delete-confirm');
-       this.taskToDelete = taskId;
+      this.$store.commit('SET_SHOW_MODAL', 'delete-confirm');
+      this.$store.commit('SET_IS_VALID', true);
+      this.taskToDelete = taskId;
     },
 
     addTask() {
+      this.$store.commit('SET_IS_VALID', false);
       this.$store.commit('SET_SHOW_MODAL', 'add-edit');
-      this.newTask = this.makeNewTask();
     },
 
-    makeNewTask() {
+    makeNewTask(data) {
       return {
         id:Date.now(),
-        time: '11:00',//data.time,
-        content: 'mock task',//data.content,
+        time: data.time,
+        content: data.task,
         dayId: this.ACTIVATED_DAY,
-        isPassed: this.isPassed('11:00'),//this.isPassed(data.time),
+        isPassed: this.isPassed(data.time),
       }
     },
 
-    submitDialog(data) {
-      if (data === 'delete-confirm') {
+    submitDialog(component, data) {
+      if (component === 'delete-confirm') {
         this.DELETE_DAY_TASK(this.taskToDelete);
       }
 
-      if (data === 'add-edit') {
-        this.ADD_DAY_TASK(this.newTask);
+      if (component === 'add-edit') {
+        const newTask = this.makeNewTask(data);
+        this.ADD_DAY_TASK(newTask);
       }
 
       this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
