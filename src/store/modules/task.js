@@ -30,6 +30,14 @@ export default {
           return response.data;
         })
     },
+    CHANGE_DAY_TASK({commit, state}, {taskId, changedTask}) {
+      return axios.put('/api/tasks/' + taskId, changedTask)
+        .then (response => {
+          commit('CHANGE_DAY_TASK', response.data);
+          commit('SET_DAY_TASKS', state.dayTasks);
+          return response.data;
+        })
+    },
   },
   mutations: {
     SET_DAY_TASKS(state, dayTasks) {
@@ -62,6 +70,13 @@ export default {
       state.dayTasks.push(newTask);
     },
 
+    CHANGE_DAY_TASK(state, changedTask) {
+      const index = state.dayTasks.findIndex(task => task.id === changedTask.id);
+
+      if (index > -1) {
+        state.dayTasks[index] = changedTask;
+      }
+    },
   },
   getters: {
     DAY_TASKS(state) {

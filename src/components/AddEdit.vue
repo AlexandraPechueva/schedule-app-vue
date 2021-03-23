@@ -21,7 +21,7 @@
 
 <script>
   import { required, minLength } from 'vuelidate/lib/validators';
-  import {mapActions} from 'vuex';
+  import {mapActions, mapState} from 'vuex';
 
   export default {
     name: 'add-edit',
@@ -32,6 +32,9 @@
       },
       validationClass: {},
     }),
+    props: {
+      isEdit: Boolean,
+    },
     validations: {
       form: {
         time: { required },
@@ -41,14 +44,25 @@
         },
       },
     },
+    computed: {
+      ...mapState({
+        modalData: state => state.dialog.modalData,
+      })
+    },
+    mounted() {
+      if(this.isEdit) {
+        this.form = this.modalData;
+      }
+    },
     methods: {
       ...mapActions([
         'GET_IS_VALID',
+        'GET_MODAL_DATA',
       ]),
       onInput(fieldName) {
         const field = this.$v.form[fieldName];
 
-      if (field) {
+        if (field) {
           field.$touch();
           this.validationClass[fieldName] = field.$invalid && field.$dirty;
         }
@@ -56,7 +70,7 @@
         this.GET_IS_VALID(!this.$v.form.$invalid);
 
         if(!this.$v.form.$invalid) {
-          this.$emit('onAddTask', this.form)
+          this.GET_MODAL_DATA(this.form);
         }
       }
     },

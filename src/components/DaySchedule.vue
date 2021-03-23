@@ -1,6 +1,6 @@
 <template>
   <div class="day-schedule">
-     <modal-dialog @submitDialog="submitDialog" />
+     <modal-dialog :isEdit="isEdit" @submitDialog="submitDialog" />
 
      <div class="icons-panel">
         <div class="icon"><md-icon>open_in_new</md-icon></div>
@@ -22,12 +22,14 @@
     <div v-if="FILTERED_DAY_TASKS && FILTERED_DAY_TASKS.length" class="tasks">
       <div v-for="task in FILTERED_DAY_TASKS" :key="task.id"
         class="task animation"
-        :class="{'passed-time': task.isPassed}">
+        :class="{'passed-time': task.isPassed}"
+        @click="taskClick(task)"
+        >
 
           <p class="task-name">{{task.time}}</p>
           <p class="task-content">{{task.content}}</p>
 
-          <md-icon @click.native="deleteTaskConfirm(task.id)">delete</md-icon>
+          <md-icon @click.native.stop="deleteTaskConfirm(task.id)">delete</md-icon>
         </div>
       </div>
  
@@ -36,7 +38,7 @@
 </template>
 
 <script>
- import {mapActions, mapGetters, mapMutations} from 'vuex';
+ import {mapActions, mapGetters, mapMutations, mapState} from 'vuex';
  import ModalDialog from '@/components/ModalDialog.vue';
 
 export default {
@@ -46,6 +48,7 @@ export default {
         activatedDay: 0,
         taskStates: ['Все','Активные','Прошедшие'],
         taskToDelete: 0,
+        isEdit: false,
        }
     },
   components: {
@@ -56,6 +59,9 @@ export default {
         'ACTIVATED_DAY',
         'FILTERED_DAY_TASKS',
       ]),
+      ...mapState({
+        modalData: state => state.dialog.modalData,
+      }),
       currentTasksState: {
         get () {
           return this.$store.getters['CURRENT_TASKS_STATE'];
@@ -70,6 +76,8 @@ export default {
       'GET_DAY_TASKS',
       'ADD_DAY_TASK',
       'DELETE_DAY_TASK',
+      'CHANGE_DAY_TASK',
+      'GET_MODAL_DATA',
     ]),
 
     ...mapMutations([
@@ -85,13 +93,33 @@ export default {
     },
 
     addTask() {
+      this.isEdit = false;
+      const modalData = {
+        title: 'Добавление',
+      };
+      this.GET_MODAL_DATA(modalData);
+
       this.$store.commit('SET_IS_VALID', false);
+      this.$store.commit('SET_SHOW_MODAL', 'add-edit');
+    },
+
+    taskClick(task) {
+      if (window.getSelection().toString()) return;
+
+      this.isEdit = true;
+      const modalData = {
+        id: task.id,
+        title: 'Редактирование',
+        time: task.time,
+        task: task.content,
+      };
+
+      this.GET_MODAL_DATA(modalData);
       this.$store.commit('SET_SHOW_MODAL', 'add-edit');
     },
 
     makeNewTask(data) {
       return {
-        id:Date.now(),
         time: data.time,
         content: data.task,
         dayId: this.ACTIVATED_DAY,
@@ -106,7 +134,17 @@ export default {
 
       if (component === 'add-edit') {
         const newTask = this.makeNewTask(data);
-        this.ADD_DAY_TASK(newTask);
+
+        if (this.isEdit) {
+          this.CHANGE_DAY_TASK({taskId: data.id, changedTask: newTask});
+        } else {
+            const newTaskWithId = {
+              id: Date.now(),
+              ...newTask,
+            }
+
+            this.ADD_DAY_TASK(newTaskWithId);
+        }
       }
 
       this.$store.dispatch('TOGGLE_SHOW_MODAL', '');

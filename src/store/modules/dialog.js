@@ -3,6 +3,12 @@ export default {
     modalVisible: false,
     modalComponent: null,
     isValid: false,
+    modalData: {
+      id: null,
+      title: null,
+      time: null,
+      task: null,
+    },
   },
   actions: {
     TOGGLE_SHOW_MODAL({commit}, commentName) {
@@ -10,7 +16,10 @@ export default {
     },
     GET_IS_VALID({commit}, isInvalid) {
       commit('SET_IS_VALID', isInvalid);
-    }
+    },
+    GET_MODAL_DATA({commit}, modalData) {
+      commit('SET_MODAL_DATA', modalData);
+    },
   },
   mutations: {
     SET_SHOW_MODAL(state, componentName) {
@@ -19,7 +28,11 @@ export default {
     },
     SET_IS_VALID(state, isValid) {
       state.isValid = isValid;
-      console.log(state.isValid);
-    }
+    },
+    SET_MODAL_DATA(state, modalData) {
+      state.modalData = {
+        ...modalData,
+      }
+    },
   },
 }
