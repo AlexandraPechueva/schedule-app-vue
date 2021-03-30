@@ -1,7 +1,7 @@
 <template>
   <div class="modal-dialog">
     <md-dialog
-      :md-active.sync="visible"
+      :md-active="updateVisible()"
       @md-clicked-outside="closeDialog()"
     >
       <md-dialog-title>{{modalData.title}}</md-dialog-title>
@@ -53,6 +53,10 @@
     methods: {
       closeDialog() {
         this.$store.dispatch('TOGGLE_SHOW_MODAL', '');
+      },
+
+      updateVisible() {
+        return this.visible;
       },
 
       submitDialog() {
